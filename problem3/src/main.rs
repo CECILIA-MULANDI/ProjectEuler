@@ -6,7 +6,7 @@ fn main(){
     let res=find_factors(600851475143);
     // let res=find_factors(10);
     println!("{:?}",res);
-
+   
     println!("{}",find_largest(&res))
     
 }
