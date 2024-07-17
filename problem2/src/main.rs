@@ -11,7 +11,7 @@ fn main() {
     while sum < 4_000_000 {     
         let res = prev2 + prev1;
        if res %2==0{
-        sum+=&res;
+        sum+=res;
 
        }
         prev2 = prev1;
