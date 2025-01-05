@@ -1,1 +1,1 @@
-![Getting Started](./problem.png)
+![Getting Started](./image.png)
