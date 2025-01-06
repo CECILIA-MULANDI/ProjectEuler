@@ -1,1 +1,0 @@
-/home/cecilia/Developer/project_euler/ProjectEuler/sliding_window_algorithm/target/debug/sliding_window_algorithm: /home/cecilia/Developer/project_euler/ProjectEuler/sliding_window_algorithm/src/main.rs
