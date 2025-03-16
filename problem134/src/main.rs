@@ -1,62 +1,53 @@
-fn main() {
-    println!("{:?}", prime_pair_connection());
-}
+fn sieve_of_eratosthenes(limit: usize) -> Vec<usize> {
+    let mut sieve = vec![true; limit + 1];
+    sieve[0] = false;
+    sieve[1] = false;
 
-fn prime_pair_connection() -> u64 {
-    let lower_bound: u64 = 5;
-    let upper_bound: u64 = 1_000_000;
-    let mut sum = 0;
-    let mut consecutive_primes = Vec::new();
-
-    for i in lower_bound..=upper_bound {
-        if is_prime(i) {
-            consecutive_primes.push(i);
-            if consecutive_primes.len() == 2 {
-                let s = find_s(&consecutive_primes);
-                sum += s;
-                // Keep only the last prime in consecutive_primes
-                consecutive_primes.remove(0);
+    for i in 2..=(limit as f64).sqrt() as usize {
+        if sieve[i] {
+            for j in (i * i..=limit).step_by(i) {
+                sieve[j] = false;
             }
         }
     }
 
-    sum
+    sieve
+        .into_iter()
+        .enumerate()
+        .filter_map(|(i, is_prime)| if is_prime { Some(i) } else { None })
+        .collect()
 }
 
-fn find_s(primes: &Vec<u64>) -> u64 {
-    let last_digits = primes[0]; // p1 is the number whose last digits we need to match
-    let mod_value = 10_u64.pow((get_digit_count(last_digits) as u64).try_into().unwrap()); // 10^k where k is the number of digits in p1
-    let mut s: u64 = last_digits;
+fn find_smallest_s(p1: usize, p2: usize) -> usize {
+    let p1_len = p1.to_string().len(); // Get the length of p1
+    let mut n = p1; // Start with p1
 
-    // Loop to find the smallest number that ends with last_digits and is divisible by p2
-    while s % primes[1] != 0 {
-        s += mod_value;
-    }
-
-    s
-}
-
-// Helper function to find the number of digits in a number
-fn get_digit_count(n: u64) -> usize {
-    n.to_string().len()
-}
-
-// Helper function to check if a number is prime
-fn is_prime(n: u64) -> bool {
-    if n < 2 {
-        return false;
-    }
-    if n == 2 {
-        return true;
-    }
-    if n % 2 == 0 {
-        return false;
-    }
-    let limit = (n as f64).sqrt();
-    for i in (3..=limit as u64).step_by(2) {
-        if n % i == 0 {
-            return false;
+    loop {
+        // Check if the current number n is divisible by p2
+        if n % p2 == 0 {
+            return n;
         }
+        // Increase n by 10^len(p1) to ensure it ends in p1
+        n += 10_usize.pow(p1_len as u32);
     }
-    true
+}
+
+fn main() {
+    let limit = 1_000_000; // Limit for primes generation
+
+    // Generate all primes up to the limit
+    let primes = sieve_of_eratosthenes(limit);
+
+    let mut total_sum = 0;
+
+    // Iterate over consecutive pairs of primes
+    for i in 1..primes.len() {
+        let p1 = primes[i]; // Current prime
+        let p2 = primes[i - 1]; // Previous prime
+
+        total_sum += find_smallest_s(p1, p2); // Find the smallest S for this pair
+    }
+
+    // Print the total sum of all smallest S values
+    println!("The sum of S is: {}", total_sum);
 }
